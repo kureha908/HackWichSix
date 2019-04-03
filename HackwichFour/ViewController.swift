@@ -12,7 +12,9 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
 //declare our array
 
   
-    var myFriends = ["Ryan", "Nicole", "Sara", "Tyler"]
+    var myFriends = ["Kapolei Kalapawai"]
+    
+    var restrantImageDate = [String]()
 
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -28,13 +30,23 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         cell.textLabel?.text=text
         return cell
     }
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+        tableView.deselectRow(at: indexPath as IndexPath, animated: true)
+    }
+    
 
-
-
-
+    @IBOutlet var tableView: UITableView!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        tableView.dataSource = self
+        tableView.delegate = self
+        
+        let path = Bundle.main.path(forResource: "Property List", ofType: "plist")
+        let dich = NSDictionary(contentsOfFile: path!)
+        
+        restrantImageDate = dich!.object(forKey: "restrantImages") as! [String]
     }
 
     override func didReceiveMemoryWarning() {
@@ -42,6 +54,14 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         // Dispose of any resources that can be recreated.
     }
 
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "mySegue"
+        {
+            let s1 = segue.destination as! detailViewController
+            let imageIndex = tableView.indexPathForSelectedRow?.row
+            s1.imagePass = restrantImageDate[imageIndex!]
+        }
+    }
 
 }
 
